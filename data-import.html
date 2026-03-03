@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据导入 - KPI System</title>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #1a1a2e;
+            --secondary: #16213e;
+            --accent: #0f3460;
+            --success: #27ae60;
+            --info: #3498db;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            padding: 40px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.8;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        .card h2 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card h3 {
+            color: var(--primary);
+            margin: 20px 0 10px;
+            font-size: 16px;
+        }
+
+        .card p {
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .upload-area {
+            border: 3px dashed #ddd;
+            border-radius: 15px;
+            padding: 50px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 20px;
+        }
+
+        .upload-area:hover {
+            border-color: var(--accent);
+            background: #f8f9fa;
+        }
+
+        .upload-area.dragover {
+            border-color: var(--success);
+            background: #e8f8f5;
+        }
+
+        .upload-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .upload-area h3 {
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .upload-area p {
+            color: #999;
+            margin-bottom: 0;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 16px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .file-info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .file-info.active {
+            display: block;
+        }
+
+        .file-info .name {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .file-info .size {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .sample-data {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .sample-data h4 {
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .sample-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        .sample-table th, .sample-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .sample-table th {
+            background: var(--accent);
+            color: white;
+        }
+
+        .sample-table tr:hover {
+            background: #e8f4f8;
+        }
+
+        .note {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+
+        .note p {
+            margin: 0;
+            color: #856404;
+        }
+
+        .steps {
+            counter-reset: step;
+        }
+
+        .step {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .step::before {
+            counter-increment: step;
+            content: counter(step);
+            min-width: 30px;
+            height: 30px;
+            background: var(--accent);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: 600;
+        }
+
+        .step-content h4 {
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .step-content p {
+            margin: 0;
+            font-size: 14px;
+        }
+
+        .data-preview {
+            margin-top: 20px;
+            max-height: 300px;
+            overflow: auto;
+            display: none;
+        }
+
+        .data-preview.active {
+            display: block;
+        }
+
+        .data-preview table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .data-preview th, .data-preview td {
+            padding: 8px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        .data-preview th {
+            background: var(--accent);
+            color: white;
+            position: sticky;
+            top: 0;
+        }
+
+        .preview-count {
+            color: var(--success);
+            font-weight: 600;
+        }
+
+        .import-success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            display: none;
+        }
+
+        .import-success.active {
+            display: block;
+        }
+
+        .import-success .icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: white;
+            text-decoration: none;
+            margin-bottom: 20px;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+
+        .back-link:hover {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="dashboard.html" class="back-link">← 返回仪表盘</a>
+        
+        <div class="header">
+            <h1>📥 数据导入</h1>
+            <p>从 QuickBooks Online 导入销售数据</p>
+        </div>
+
+        <div class="card">
+            <h2>📋 QBO 数据导入指南</h2>
+            
+            <div class="note">
+                <p><strong>重要提示：</strong> 请从 QuickBooks Online 导出以下报表并保存为 Excel 或 CSV 格式后导入。</p>
+            </div>
+
+            <h3>导出步骤：</h3>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-content">
+                        <h4>登录 QBO</h4>
+                        <p>访问 quickbooks.intuit.com 并登录您的账户</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-content">
+                        <h4>生成销售明细报表</h4>
+                        <p>进入 <strong>Reports</strong> → <strong>Sales</strong> → <strong>Sales by Customer Detail</strong> 或 <strong>Sales by Item</strong></p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-content">
+                        <h4>设置日期范围</h4>
+                        <p>选择您需要分析的日期范围（如：过去12个月）</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-content">
+                        <h4>导出数据</h4>
+                        <p>点击 <strong>Export</strong> → 选择 <strong>Excel</strong> 格式下载</p>
+                    </div>
+                </div>
+            </div>
+
+            <h3>需要包含的字段：</h3>
+            <div class="sample-data">
+                <table class="sample-table">
+                    <tr>
+                        <th>字段名</th>
+                        <th>说明</th>
+                        <th>示例</th>
+                    </tr>
+                    <tr>
+                        <td>Date / 日期</td>
+                        <td>交易日期</td>
+                        <td>2025-01-15</td>
+                    </tr>
+                    <tr>
+                        <td>Customer / 客户</td>
+                        <td>客户名称</td>
+                        <td>ABC Company</td>
+                    </tr>
+                    <tr>
+                        <td>Item / 产品</td>
+                        <td>产品名称</td>
+                        <td>Michelin Tire 225/45R17</td>
+                    </tr>
+                    <tr>
+                        <td>Quantity / 数量</td>
+                        <td>销售数量</td>
+                        <td>4</td>
+                    </tr>
+                    <tr>
+                        <td>Amount / 金额</td>
+                        <td>销售金额</td>
+                        <td>600.00</td>
+                    </tr>
+                    <tr>
+                        <td>Warehouse / Location</td>
+                        <td>仓库代码 (MT/QC/GT)</td>
+                        <td>MT</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📤 上传数据文件</h2>
+            
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-icon">📁</div>
+                <h3>拖拽文件到这里</h3>
+                <p>或点击选择文件 (支持 .xlsx, .xls, .csv)</p>
+            </div>
+            
+            <input type="file" id="fileInput" class="file-input" accept=".xlsx,.xls,.csv">
+
+            <div class="file-info" id="fileInfo">
+                <div class="name" id="fileName"></div>
+                <div class="size" id="fileSize"></div>
+            </div>
+
+            <div class="data-preview" id="dataPreview">
+                <h4>数据预览 (<span class="preview-count" id="previewCount">0</span> 条记录)</h4>
+                <table id="previewTable">
+                    <thead id="previewHead"></thead>
+                    <tbody id="previewBody"></tbody>
+                </table>
+            </div>
+
+            <div style="margin-top: 20px; display: flex; gap: 10px;">
+                <button class="btn btn-primary" id="importBtn" onclick="importData()" disabled>导入数据</button>
+                <button class="btn btn-secondary" onclick="clearData()">清除数据</button>
+            </div>
+
+            <div class="import-success" id="importSuccess">
+                <div class="icon">✅</div>
+                <h3>数据导入成功！</h3>
+                <p>已成功导入 <span id="importCount">0</span> 条销售记录</p>
+                <br>
+                <a href="dashboard.html" class="btn btn-primary">查看仪表盘</a>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>🔧 手动创建示例数据</h2>
+            <p>如果没有QBO数据，可以使用系统预置的示例数据来演示功能：</p>
+            <button class="btn btn-primary" onclick="loadSampleData()">加载示例数据</button>
+        </div>
+    </div>
+
+    <script>
+        let parsedData = [];
+        const fieldMappings = {
+            'Date': 'date',
+            '日期': 'date',
+            'Transaction Date': 'date',
+            'Customer': 'customer',
+            '客户': 'customer',
+            'Customer Name': 'customer',
+            'Item': 'product',
+            '产品': 'product',
+            'Item Name': 'product',
+            'Product': 'product',
+            'Description': 'product',
+            'Quantity': 'quantity',
+            '数量': 'quantity',
+            'Qty': 'quantity',
+            'Amount': 'amount',
+            '金额': 'amount',
+            'Total': 'amount',
+            'Sales Amount': 'amount',
+            'Extended Amount': 'amount',
+            'Subtotal': 'amount',
+            'Warehouse': 'warehouse',
+            '仓库': 'warehouse',
+            'Location': 'warehouse',
+            'Store': 'warehouse',
+            'Class': 'warehouse',
+            'Order No': 'orderNo',
+            '订单号': 'orderNo',
+            'Invoice': 'orderNo',
+            'Invoice #': 'orderNo'
+        };
+
+        const categoryKeywords = {
+            tires: ['tire', '轮胎', 'rubber', ' Michelin', 'Goodyear', 'Bridgestone', 'Continental', 'Pirelli', '米其林', '固特异', '普利司通'],
+            wheels: ['wheel', '轮毂', 'rim', ' alloy', 'steel wheel', '铝轮'],
+            parts: ['part', '配件', 'lug', 'nut', 'bolt', 'sensor', 'valve', 'kit', 'weight']
+        };
+
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+
+        uploadArea.addEventListener('click', () => fileInput.click());
+        
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length) handleFile(files[0]);
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length) handleFile(e.target.files[0]);
+        });
+
+        function handleFile(file) {
+            document.getElementById('fileName').textContent = file.name;
+            document.getElementById('fileSize').textContent = formatFileSize(file.size);
+            document.getElementById('fileInfo').classList.add('active');
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                    const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+                    
+                    if (jsonData.length > 1) {
+                        parseData(jsonData);
+                    }
+                } catch (err) {
+                    alert('文件解析失败: ' + err.message);
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        function parseData(jsonData) {
+            const headers = jsonData[0].map(h => String(h).trim());
+            const mappedHeaders = headers.map(h => fieldMappings[h] || h.toLowerCase());
+
+            parsedData = [];
+            for (let i = 1; i < jsonData.length; i++) {
+                if (!jsonData[i] || jsonData[i].length === 0) continue;
+                
+                const row = jsonData[i];
+                const item = {};
+                
+                mappedHeaders.forEach((key, idx) => {
+                    if (key && row[idx] !== undefined) {
+                        item[key] = row[idx];
+                    }
+                });
+
+                if (!item.date && row[0]) item.date = formatDate(row[0]);
+                if (!item.product && row[1]) item.product = String(row[1]);
+                if (!item.amount && row[2]) item.amount = parseFloat(row[2]) || 0;
+                if (!item.quantity && row[3]) item.quantity = parseFloat(row[3]) || 1;
+                if (!item.customer && row[4]) item.customer = String(row[4]);
+                if (!item.warehouse) item.warehouse = inferWarehouse(item);
+
+                item.category = inferCategory(item.product || '');
+                item.cost = item.amount * 0.6;
+                
+                parsedData.push(item);
+            }
+
+            showPreview();
+        }
+
+        function formatDate(dateVal) {
+            if (!dateVal) return '';
+            if (typeof dateVal === 'string') return dateVal.substring(0, 10);
+            const date = new Date((dateVal - 25569) * 86400 * 1000);
+            return date.toISOString().substring(0, 10);
+        }
+
+        function inferWarehouse(item) {
+            const text = JSON.stringify(item).toLowerCase();
+            if (text.includes('mt') || text.includes('montreal')) return 'MT';
+            if (text.includes('qc') || text.includes('quebec')) return 'QC';
+            if (text.includes('gt') || text.includes('greater')) return 'GT';
+            return 'MT';
+        }
+
+        function inferCategory(productName) {
+            const name = String(productName).toLowerCase();
+            for (const [cat, keywords] of Object.entries(categoryKeywords)) {
+                if (keywords.some(k => name.includes(k.toLowerCase()))) return cat;
+            }
+            return 'parts';
+        }
+
+        function showPreview() {
+            document.getElementById('previewCount').textContent = parsedData.length;
+            document.getElementById('dataPreview').classList.add('active');
+            document.getElementById('importSuccess').classList.remove('active');
+            document.getElementById('importBtn').disabled = false;
+
+            const displayHeaders = ['date', 'product', 'customer', 'quantity', 'amount', 'warehouse', 'category'];
+            
+            document.getElementById('previewHead').innerHTML = 
+                '<tr>' + displayHeaders.map(h => `<th>${h}</th>`).join('') + '</tr>';
+            
+            document.getElementById('previewBody').innerHTML = parsedData.slice(0, 10).map(row => 
+                '<tr>' + displayHeaders.map(h => `<td>${row[h] || ''}</td>`).join('') + '</tr>'
+            ).join('');
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+            return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+        }
+
+        function importData() {
+            if (parsedData.length === 0) {
+                alert('没有可导入的数据');
+                return;
+            }
+
+            localStorage.setItem('salesData', JSON.stringify(parsedData));
+            
+            document.getElementById('importCount').textContent = parsedData.length;
+            document.getElementById('importSuccess').classList.add('active');
+            document.getElementById('dataPreview').classList.remove('active');
+            document.getElementById('importBtn').disabled = true;
+        }
+
+        function clearData() {
+            localStorage.removeItem('salesData');
+            parsedData = [];
+            document.getElementById('fileInfo').classList.remove('active');
+            document.getElementById('dataPreview').classList.remove('active');
+            document.getElementById('importSuccess').classList.remove('active');
+            document.getElementById('importBtn').disabled = true;
+            fileInput.value = '';
+        }
+
+        function loadSampleData() {
+            const sampleData = generateSampleData();
+            localStorage.setItem('salesData', JSON.stringify(sampleData));
+            
+            document.getElementById('importCount').textContent = sampleData.length;
+            document.getElementById('importSuccess').classList.add('active');
+        }
+
+        function generateSampleData() {
+            const products = [
+                { name: 'Michelin Defender 225/45R17', category: 'tires', price: 180 },
+                { name: 'Goodyear Assurance 205/55R16', category: 'tires', price: 150 },
+                { name: 'Bridgestone Potenza 245/40R18', category: 'tires', price: 220 },
+                { name: 'Continental ExtremeContact 215/45R17', category: 'tires', price: 190 },
+                { name: 'Pirelli P7 205/55R16', category: 'tires', price: 160 },
+                { name: 'BBS CH-R 17x8" Alloy Wheel', category: 'wheels', price: 350 },
+                { name: 'Enkei RPF1 18x9.5" Wheel', category: 'wheels', price: 420 },
+                { name: 'SSR Professor SP3 17" Wheel', category: 'wheels', price: 280 },
+                { name: 'TSW Niche 18x8" Chrome', category: 'wheels', price: 310 },
+                { name: 'Wheel Pros ATS 16x7" Wheel', category: 'wheels', price: 220 },
+                { name: 'Lug Nuts Set (20pcs)', category: 'parts', price: 45 },
+                { name: 'TPMS Sensor Kit', category: 'parts', price: 65 },
+                { name: 'Wheel Weights (100pcs)', category: 'parts', price: 25 },
+                { name: 'Valve Stems (10pcs)', category: 'parts', price: 15 },
+                { name: 'Alignment Kit', category: 'parts', price: 120 }
+            ];
+
+            const customers = ['AutoFix Shop', 'Tire World', 'Quick Service Center', 'Premium Auto', 'City Motors', 'Elite Wheels', 'Pro Tire', 'Metro Auto'];
+            const warehouses = ['MT', 'QC', 'GT'];
+            const months = [];
+
+            for (let m = 0; m < 12; m++) {
+                const date = new Date(2025, m, 1);
+                months.push(date.toISOString().substring(0, 7));
+            }
+
+            const data = [];
+            let orderNo = 1000;
+
+            for (let i = 0; i < 500; i++) {
+                const month = months[Math.floor(Math.random() * months.length)];
+                const day = Math.floor(Math.random() * 28) + 1;
+                const date = `${month}-${day.toString().padStart(2, '0')}`;
+                
+                const product = products[Math.floor(Math.random() * products.length)];
+                const quantity = Math.floor(Math.random() * 4) + 1;
+                const warehouse = warehouses[Math.floor(Math.random() * warehouses.length)];
+                
+                data.push({
+                    orderNo: 'INV-' + (orderNo++),
+                    date: date,
+                    customer: customers[Math.floor(Math.random() * customers.length)],
+                    product: product.name,
+                    quantity: quantity,
+                    amount: product.price * quantity,
+                    cost: product.price * quantity * 0.6,
+                    warehouse: warehouse,
+                    category: product.category
+                });
+            }
+
+            return data;
+        }
+    </script>
+</body>
+</html>

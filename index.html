@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KPI System - Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+        }
+
+        :root {
+            --bg-page: #fbfbfd;
+            --bg-card: #ffffff;
+            --accent: #0066cc;
+            --accent-hover: #0077ed;
+            --text-primary: #1d1d1f;
+            --text-secondary: #6e6e73;
+            --border: rgba(0, 0, 0, 0.08);
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: var(--bg-page);
+        }
+
+        .login-container {
+            background: var(--bg-card);
+            padding: 40px 44px;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            width: 380px;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 52px;
+            margin-bottom: 12px;
+        }
+
+        h1 {
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            font-size: 26px;
+            font-weight: 600;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            margin-bottom: 28px;
+            font-size: 14px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-size: 16px;
+            background: var(--bg-card);
+            color: var(--text-primary);
+            transition: all 0.2s;
+        }
+
+        input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(0, 102, 204, 0.1);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 8px;
+        }
+
+        .login-btn:hover {
+            background: var(--accent-hover);
+        }
+
+        .error {
+            color: #ff3b30;
+            font-size: 13px;
+            margin-top: 14px;
+            display: none;
+        }
+
+        .company-info {
+            margin-top: 28px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .company-info p {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin: 5px 0;
+        }
+
+        .warehouse-badges {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .badge {
+            padding: 5px 14px;
+            background: var(--bg-page);
+            color: var(--text-primary);
+            border-radius: 14px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo">🔧</div>
+        <h1>KPI 系统</h1>
+        <p class="subtitle">轮胎 & 轮毂销售管理系统</p>
+        
+        <div class="input-group">
+            <label>访问代码</label>
+            <input type="text" id="accessCode" placeholder="请输入访问代码" autocomplete="off">
+        </div>
+        
+        <button class="login-btn" onclick="login()">登 录</button>
+        
+        <p class="error" id="errorMsg">访问代码错误，请重试</p>
+        
+        <div class="company-info">
+            <p>数据来源: QuickBooks Online (QBO)</p>
+            <div class="warehouse-badges">
+                <span class="badge">MT</span>
+                <span class="badge">QC</span>
+                <span class="badge">GT</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function login() {
+            const code = document.getElementById('accessCode').value.trim();
+            const errorMsg = document.getElementById('errorMsg');
+            
+            if (code === 'dodo') {
+                sessionStorage.setItem('isLoggedIn', 'true');
+                window.location.href = 'dashboard.html';
+            } else {
+                errorMsg.style.display = 'block';
+                document.getElementById('accessCode').value = '';
+            }
+        }
+
+        document.getElementById('accessCode').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                login();
+            }
+        });
+
+        window.onload = function() {
+            if (sessionStorage.getItem('isLoggedIn') === 'true') {
+                window.location.href = 'dashboard.html';
+            }
+        }
+    </script>
+</body>
+</html>
