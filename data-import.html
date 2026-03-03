@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,17 +15,23 @@
         }
 
         :root {
-            --primary: #1a1a2e;
-            --secondary: #16213e;
-            --accent: #0f3460;
-            --success: #27ae60;
-            --info: #3498db;
+            --primary: #f8fafc;
+            --secondary: #cbd5e1;
+            --accent: linear-gradient(to right, #8b5cf6 0%, #3b82f6 100%);
+            --bg-page: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            --card-bg: rgba(30, 41, 59, 0.65);
+            --border: rgba(255, 255, 255, 0.1);
+            --success: #10b981;
+            --info: #3b82f6;
         }
 
         body {
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            background: var(--bg-page);
+            background-attachment: fixed;
+            background-size: cover;
             min-height: 100vh;
             padding: 40px;
+            color: var(--primary);
         }
 
         .container {
@@ -48,11 +55,20 @@
         }
 
         .card {
-            background: white;
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
             border-radius: 20px;
             padding: 40px;
             margin-bottom: 25px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 15px 40px 0 rgba(0, 0, 0, 0.5);
+            background: rgba(30, 41, 59, 0.85);
         }
 
         .card h2 {
@@ -71,29 +87,30 @@
         }
 
         .card p {
-            color: #666;
+            color: var(--secondary);
             margin-bottom: 15px;
             line-height: 1.6;
         }
 
         .upload-area {
-            border: 3px dashed #ddd;
+            border: 3px dashed var(--border);
             border-radius: 15px;
             padding: 50px;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s;
             margin-bottom: 20px;
+            background: rgba(15, 23, 42, 0.4);
         }
 
         .upload-area:hover {
-            border-color: var(--accent);
-            background: #f8f9fa;
+            border-color: #3b82f6;
+            background: rgba(15, 23, 42, 0.8);
         }
 
         .upload-area.dragover {
             border-color: var(--success);
-            background: #e8f8f5;
+            background: rgba(16, 185, 129, 0.2);
         }
 
         .upload-icon {
@@ -107,7 +124,7 @@
         }
 
         .upload-area p {
-            color: #999;
+            color: var(--secondary);
             margin-bottom: 0;
         }
 
@@ -126,18 +143,23 @@
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);
+            background: var(--accent);
             color: white;
         }
 
         .btn-secondary {
-            background: #e0e0e0;
-            color: #333;
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid var(--border);
+            color: var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(15, 23, 42, 0.9);
         }
 
         .btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
 
         .btn:disabled {
@@ -146,11 +168,12 @@
         }
 
         .file-info {
-            background: #f8f9fa;
+            background: rgba(15, 23, 42, 0.6);
             padding: 20px;
             border-radius: 10px;
             margin-bottom: 20px;
             display: none;
+            border: 1px solid var(--border);
         }
 
         .file-info.active {
@@ -164,12 +187,13 @@
         }
 
         .file-info .size {
-            color: #666;
+            color: var(--secondary);
             font-size: 14px;
         }
 
         .sample-data {
-            background: #f8f9fa;
+            background: rgba(15, 23, 42, 0.4);
+            border: 1px solid var(--border);
             padding: 20px;
             border-radius: 10px;
             margin-top: 20px;
@@ -186,24 +210,25 @@
             font-size: 14px;
         }
 
-        .sample-table th, .sample-table td {
+        .sample-table th,
+        .sample-table td {
             padding: 10px;
             text-align: left;
-            border-bottom: 1px solid #ddd;
+            border-bottom: 1px solid var(--border);
         }
 
         .sample-table th {
-            background: var(--accent);
-            color: white;
+            background: rgba(59, 130, 246, 0.2);
+            color: var(--primary);
         }
 
         .sample-table tr:hover {
-            background: #e8f4f8;
+            background: rgba(15, 23, 42, 0.8);
         }
 
         .note {
-            background: #fff3cd;
-            border-left: 4px solid #ffc107;
+            background: rgba(245, 158, 11, 0.1);
+            border-left: 4px solid var(--warning, #f59e0b);
             padding: 15px;
             border-radius: 5px;
             margin: 20px 0;
@@ -211,7 +236,7 @@
 
         .note p {
             margin: 0;
-            color: #856404;
+            color: #fcd34d;
         }
 
         .steps {
@@ -223,7 +248,8 @@
             align-items: flex-start;
             margin-bottom: 20px;
             padding: 15px;
-            background: #f8f9fa;
+            background: rgba(15, 23, 42, 0.4);
+            border: 1px solid var(--border);
             border-radius: 10px;
         }
 
@@ -269,15 +295,16 @@
             font-size: 13px;
         }
 
-        .data-preview th, .data-preview td {
+        .data-preview th,
+        .data-preview td {
             padding: 8px;
             text-align: left;
-            border: 1px solid #ddd;
+            border: 1px solid var(--border);
         }
 
         .data-preview th {
-            background: var(--accent);
-            color: white;
+            background: rgba(59, 130, 246, 0.2);
+            color: var(--primary);
             position: sticky;
             top: 0;
         }
@@ -288,9 +315,9 @@
         }
 
         .import-success {
-            background: #d4edda;
-            border: 1px solid #c3e6cb;
-            color: #155724;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid var(--success);
+            color: #10b981;
             padding: 20px;
             border-radius: 10px;
             text-align: center;
@@ -320,10 +347,11 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <a href="dashboard.html" class="back-link">← 返回仪表盘</a>
-        
+
         <div class="header">
             <h1>📥 数据导入</h1>
             <p>从 QuickBooks Online 导入销售数据</p>
@@ -331,7 +359,7 @@
 
         <div class="card">
             <h2>📋 QBO 数据导入指南</h2>
-            
+
             <div class="note">
                 <p><strong>重要提示：</strong> 请从 QuickBooks Online 导出以下报表并保存为 Excel 或 CSV 格式后导入。</p>
             </div>
@@ -347,7 +375,8 @@
                 <div class="step">
                     <div class="step-content">
                         <h4>生成销售明细报表</h4>
-                        <p>进入 <strong>Reports</strong> → <strong>Sales</strong> → <strong>Sales by Customer Detail</strong> 或 <strong>Sales by Item</strong></p>
+                        <p>进入 <strong>Reports</strong> → <strong>Sales</strong> → <strong>Sales by Customer
+                                Detail</strong> 或 <strong>Sales by Item</strong></p>
                     </div>
                 </div>
                 <div class="step">
@@ -408,13 +437,13 @@
 
         <div class="card">
             <h2>📤 上传数据文件</h2>
-            
+
             <div class="upload-area" id="uploadArea">
                 <div class="upload-icon">📁</div>
                 <h3>拖拽文件到这里</h3>
                 <p>或点击选择文件 (支持 .xlsx, .xls, .csv)</p>
             </div>
-            
+
             <input type="file" id="fileInput" class="file-input" accept=".xlsx,.xls,.csv">
 
             <div class="file-info" id="fileInfo">
@@ -495,7 +524,7 @@
         const fileInput = document.getElementById('fileInput');
 
         uploadArea.addEventListener('click', () => fileInput.click());
-        
+
         uploadArea.addEventListener('dragover', (e) => {
             e.preventDefault();
             uploadArea.classList.add('dragover');
@@ -528,7 +557,7 @@
                     const workbook = XLSX.read(data, { type: 'array' });
                     const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
                     const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
-                    
+
                     if (jsonData.length > 1) {
                         parseData(jsonData);
                     }
@@ -546,10 +575,10 @@
             parsedData = [];
             for (let i = 1; i < jsonData.length; i++) {
                 if (!jsonData[i] || jsonData[i].length === 0) continue;
-                
+
                 const row = jsonData[i];
                 const item = {};
-                
+
                 mappedHeaders.forEach((key, idx) => {
                     if (key && row[idx] !== undefined) {
                         item[key] = row[idx];
@@ -565,7 +594,7 @@
 
                 item.category = inferCategory(item.product || '');
                 item.cost = item.amount * 0.6;
-                
+
                 parsedData.push(item);
             }
 
@@ -602,11 +631,11 @@
             document.getElementById('importBtn').disabled = false;
 
             const displayHeaders = ['date', 'product', 'customer', 'quantity', 'amount', 'warehouse', 'category'];
-            
-            document.getElementById('previewHead').innerHTML = 
+
+            document.getElementById('previewHead').innerHTML =
                 '<tr>' + displayHeaders.map(h => `<th>${h}</th>`).join('') + '</tr>';
-            
-            document.getElementById('previewBody').innerHTML = parsedData.slice(0, 10).map(row => 
+
+            document.getElementById('previewBody').innerHTML = parsedData.slice(0, 10).map(row =>
                 '<tr>' + displayHeaders.map(h => `<td>${row[h] || ''}</td>`).join('') + '</tr>'
             ).join('');
         }
@@ -624,7 +653,7 @@
             }
 
             localStorage.setItem('salesData', JSON.stringify(parsedData));
-            
+
             document.getElementById('importCount').textContent = parsedData.length;
             document.getElementById('importSuccess').classList.add('active');
             document.getElementById('dataPreview').classList.remove('active');
@@ -644,66 +673,107 @@
         function loadSampleData() {
             const sampleData = generateSampleData();
             localStorage.setItem('salesData', JSON.stringify(sampleData));
-            
+
             document.getElementById('importCount').textContent = sampleData.length;
             document.getElementById('importSuccess').classList.add('active');
         }
 
         function generateSampleData() {
             const products = [
+                // Tires
                 { name: 'Michelin Defender 225/45R17', category: 'tires', price: 180 },
                 { name: 'Goodyear Assurance 205/55R16', category: 'tires', price: 150 },
                 { name: 'Bridgestone Potenza 245/40R18', category: 'tires', price: 220 },
                 { name: 'Continental ExtremeContact 215/45R17', category: 'tires', price: 190 },
                 { name: 'Pirelli P7 205/55R16', category: 'tires', price: 160 },
+                { name: 'Yokohama Avid Ascend 225/50R17', category: 'tires', price: 165 },
+                { name: 'Falken Azenis FK510 245/35R19', category: 'tires', price: 210 },
+                { name: 'Hankook Ventus V12 evo2 235/40R18', category: 'tires', price: 175 },
+                { name: 'Toyo Proxes Sport 255/35R19', category: 'tires', price: 230 },
+                { name: 'Kumho Ecsta PS71 225/40R18', category: 'tires', price: 140 },
+                // Wheels
                 { name: 'BBS CH-R 17x8" Alloy Wheel', category: 'wheels', price: 350 },
                 { name: 'Enkei RPF1 18x9.5" Wheel', category: 'wheels', price: 420 },
                 { name: 'SSR Professor SP3 17" Wheel', category: 'wheels', price: 280 },
                 { name: 'TSW Niche 18x8" Chrome', category: 'wheels', price: 310 },
                 { name: 'Wheel Pros ATS 16x7" Wheel', category: 'wheels', price: 220 },
+                { name: 'Vossen HF-2 20x9" Custom', category: 'wheels', price: 650 },
+                { name: 'Konig Hyperagram 18x8.5"', category: 'wheels', price: 240 },
+                { name: 'Sparco Assetto Gara 17x7.5"', category: 'wheels', price: 195 },
+                { name: 'Rotiform BLQ 19x8.5"', category: 'wheels', price: 380 },
+                { name: 'OZ Racing Ultraleggera 18x8"', category: 'wheels', price: 410 },
+                // Parts
                 { name: 'Lug Nuts Set (20pcs)', category: 'parts', price: 45 },
                 { name: 'TPMS Sensor Kit', category: 'parts', price: 65 },
                 { name: 'Wheel Weights (100pcs)', category: 'parts', price: 25 },
                 { name: 'Valve Stems (10pcs)', category: 'parts', price: 15 },
-                { name: 'Alignment Kit', category: 'parts', price: 120 }
+                { name: 'Alignment Kit', category: 'parts', price: 120 },
+                { name: 'Hub Centric Rings (4pcs)', category: 'parts', price: 18 },
+                { name: 'Tire Pressure Gauge', category: 'parts', price: 22 },
+                { name: 'Wheel Lock Set', category: 'parts', price: 55 },
+                { name: 'Center Caps Set (4pcs)', category: 'parts', price: 30 },
+                { name: 'Brake Caliper Paint Kit', category: 'parts', price: 40 }
             ];
 
-            const customers = ['AutoFix Shop', 'Tire World', 'Quick Service Center', 'Premium Auto', 'City Motors', 'Elite Wheels', 'Pro Tire', 'Metro Auto'];
+            const customers = [
+                'AutoFix Shop', 'Tire World', 'Quick Service Center', 'Premium Auto', 'City Motors',
+                'Elite Wheels', 'Pro Tire', 'Metro Auto', 'Speedy Service', 'Performance Garage',
+                'Reliable Auto', 'Sunrise Motors', 'Tech Wheel Center', 'Downtown Tire'
+            ];
             const warehouses = ['MT', 'QC', 'GT'];
             const months = [];
 
             for (let m = 0; m < 12; m++) {
-                const date = new Date(2025, m, 1);
-                months.push(date.toISOString().substring(0, 7));
+                for (let y of [2024, 2025]) {
+                    const date = new Date(y, m, 1);
+                    months.push(date.toISOString().substring(0, 7));
+                }
             }
 
             const data = [];
             let orderNo = 1000;
 
-            for (let i = 0; i < 500; i++) {
+            for (let i = 0; i < 1500; i++) {
                 const month = months[Math.floor(Math.random() * months.length)];
                 const day = Math.floor(Math.random() * 28) + 1;
                 const date = `${month}-${day.toString().padStart(2, '0')}`;
-                
-                const product = products[Math.floor(Math.random() * products.length)];
-                const quantity = Math.floor(Math.random() * 4) + 1;
-                const warehouse = warehouses[Math.floor(Math.random() * warehouses.length)];
-                
+
+                let randWh = Math.random();
+                let warehouse = 'MT';
+                if (randWh > 0.6 && randWh <= 0.85) warehouse = 'QC';
+                else if (randWh > 0.85) warehouse = 'GT';
+
+                let product = products[Math.floor(Math.random() * products.length)];
+                if (Math.random() > 0.5) {
+                    let parts = products.filter(p => p.category === 'parts');
+                    product = parts[Math.floor(Math.random() * parts.length)];
+                }
+
+                let maxQty = product.category === 'parts' ? 10 : 4;
+                const quantity = Math.floor(Math.random() * maxQty) + 1;
+
+                let amount = product.price * quantity;
+                if (Math.random() > 0.8) {
+                    amount = amount * 0.9;
+                }
+
                 data.push({
                     orderNo: 'INV-' + (orderNo++),
                     date: date,
                     customer: customers[Math.floor(Math.random() * customers.length)],
                     product: product.name,
                     quantity: quantity,
-                    amount: product.price * quantity,
+                    amount: amount,
                     cost: product.price * quantity * 0.6,
                     warehouse: warehouse,
                     category: product.category
                 });
             }
 
+            data.sort((a, b) => a.date.localeCompare(b.date));
             return data;
         }
     </script>
 </body>
+
 </html>

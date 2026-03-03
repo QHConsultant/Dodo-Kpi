@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,13 +14,13 @@
         }
 
         :root {
-            --bg-page: #fbfbfd;
-            --bg-card: #ffffff;
-            --accent: #0066cc;
-            --accent-hover: #0077ed;
-            --text-primary: #1d1d1f;
-            --text-secondary: #6e6e73;
-            --border: rgba(0, 0, 0, 0.08);
+            --bg-page: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            --bg-card: rgba(30, 41, 59, 0.65);
+            --accent: linear-gradient(to right, #8b5cf6 0%, #3b82f6 100%);
+            --accent-hover: linear-gradient(to right, #3b82f6 0%, #8b5cf6 100%);
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --border: rgba(255, 255, 255, 0.1);
         }
 
         body {
@@ -32,9 +33,12 @@
 
         .login-container {
             background: var(--bg-card);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--border);
             padding: 40px 44px;
             border-radius: 20px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
             width: 380px;
             text-align: center;
         }
@@ -76,7 +80,7 @@
             border: 1px solid var(--border);
             border-radius: 12px;
             font-size: 16px;
-            background: var(--bg-card);
+            background: rgba(15, 23, 42, 0.4);
             color: var(--text-primary);
             transition: all 0.2s;
         }
@@ -137,29 +141,31 @@
 
         .badge {
             padding: 5px 14px;
-            background: var(--bg-page);
-            color: var(--text-primary);
+            background: rgba(15, 23, 42, 0.6);
+            color: var(--text-secondary);
             border-radius: 14px;
+            border: 1px solid var(--border);
             font-size: 12px;
             font-weight: 500;
         }
     </style>
 </head>
+
 <body>
     <div class="login-container">
         <div class="logo">🔧</div>
         <h1>KPI 系统</h1>
         <p class="subtitle">轮胎 & 轮毂销售管理系统</p>
-        
+
         <div class="input-group">
             <label>访问代码</label>
             <input type="text" id="accessCode" placeholder="请输入访问代码" autocomplete="off">
         </div>
-        
+
         <button class="login-btn" onclick="login()">登 录</button>
-        
+
         <p class="error" id="errorMsg">访问代码错误，请重试</p>
-        
+
         <div class="company-info">
             <p>数据来源: QuickBooks Online (QBO)</p>
             <div class="warehouse-badges">
@@ -174,7 +180,7 @@
         function login() {
             const code = document.getElementById('accessCode').value.trim();
             const errorMsg = document.getElementById('errorMsg');
-            
+
             if (code === 'dodo') {
                 sessionStorage.setItem('isLoggedIn', 'true');
                 window.location.href = 'dashboard.html';
@@ -184,17 +190,18 @@
             }
         }
 
-        document.getElementById('accessCode').addEventListener('keypress', function(e) {
+        document.getElementById('accessCode').addEventListener('keypress', function (e) {
             if (e.key === 'Enter') {
                 login();
             }
         });
 
-        window.onload = function() {
+        window.onload = function () {
             if (sessionStorage.getItem('isLoggedIn') === 'true') {
                 window.location.href = 'dashboard.html';
             }
         }
     </script>
 </body>
+
 </html>
